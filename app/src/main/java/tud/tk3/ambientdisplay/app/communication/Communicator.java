@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import org.umundo.core.Discovery;
+import org.umundo.core.Greeter;
 import org.umundo.core.Message;
 import org.umundo.core.Node;
 import org.umundo.core.Publisher;
@@ -30,6 +31,9 @@ public class Communicator {
 
     private Context context;
     private AmbientDisplay display;
+    private DisplayController controller;
+
+
     private DisplayTopology topology;
 
 
@@ -63,6 +67,7 @@ public class Communicator {
             String action = msg.getMeta().get(Action.NAME);
             if (action.compareTo(Action.SCREEN_ADD) == 0) {
                 addScreen(msg);
+                controller.calculateAlignment(topology);
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
             } else if (action.compareTo(Action.DISPLAY) == 0) {
@@ -72,25 +77,29 @@ public class Communicator {
     }
 
 
-    public class DisplayGreeter implements ITypedGreeter {
+    public class DisplayGreeter extends Greeter {
 
-        @Override
         public void welcome(TypedPublisher typedPublisher, SubscriberStub subscriberStub) {
             publishScreen(typedPublisher);
         }
 
-        @Override
         public void farewell(TypedPublisher typedPublisher, SubscriberStub subscriberStub) {
             removeScreen(typedPublisher.getUUID());
         }
     }
 
 
-
-    public Communicator(Context ctx) {
+    /**
+     * Contructor
+     *
+     * @param ctx the context, usually the Activity
+     * @param ctrl the DisplayController which calculates screen alignment
+     */
+    public Communicator(Context ctx, DisplayController ctrl) {
 
         context = ctx;
         display = (AmbientDisplay) ctx;
+        controller = ctrl;
 
         WifiManager wifi = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
         if (wifi != null) {
@@ -109,17 +118,24 @@ public class Communicator {
         disc.add(node);
 
         publisher = new Publisher(CHANNEL_NAME);
+        publisher.setGreeter(new DisplayGreeter());
         node.addPublisher(publisher);
 
         subscriber = new Subscriber(CHANNEL_NAME, new DisplayReceiver());
         node.addSubscriber(subscriber);
 
-
         topology = new DisplayTopology();
     }
 
 
-    public void publishScreen(Publisher pub) {
+    /**
+     * Publishes our device configuration to the other displays
+     */
+    public void publishScreen() {
+        publishScreen(publisher);
+    }
+
+    private void publishScreen(Publisher pub) {
         Message msg = new Message();
         msg.putMeta(Action.NAME, Action.SCREEN_ADD);
         msg.putMeta(Screen.ID_NAME, node.getUUID());
@@ -131,6 +147,11 @@ public class Communicator {
         pub.send(msg);
     }
 
+    /**
+     * Sends Image data to display to all other connected Displays
+     *
+     * @param data
+     */
     public void sendImage(byte[] data) {
         Message msg = new Message();
         msg.putMeta(Action.NAME, Action.DISPLAY);
@@ -140,7 +161,7 @@ public class Communicator {
 
 
 
-    public void addScreen(Message msg) {
+    private void addScreen(Message msg) {
         String id = msg.getMeta(Communicator.Screen.ID_NAME);
         int width = Integer.parseInt(msg.getMeta(Communicator.Screen.WIDTH_NAME));
         int height = Integer.parseInt(msg.getMeta(Communicator.Screen.HEIGHT_NAME));
@@ -149,10 +170,12 @@ public class Communicator {
         topology.displays.put(id, d);
     }
 
+
     private void removeScreen(Message msg) {
         Display d = topology.displays.get(msg.getMeta(Communicator.Screen.ID_NAME));
         topology.displays.remove(d);
     }
+
 
     private void removeScreen(String uuid) {
         Display d = topology.displays.get(uuid);
