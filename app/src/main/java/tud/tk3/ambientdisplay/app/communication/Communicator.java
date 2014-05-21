@@ -11,6 +11,9 @@ import org.umundo.core.Node;
 import org.umundo.core.Publisher;
 import org.umundo.core.Receiver;
 import org.umundo.core.Subscriber;
+import org.umundo.core.SubscriberStub;
+import org.umundo.s11n.ITypedGreeter;
+import org.umundo.s11n.TypedPublisher;
 
 import tud.tk3.ambientdisplay.app.display.Display;
 import tud.tk3.ambientdisplay.app.display.DisplayTopology;
@@ -26,11 +29,11 @@ public class Communicator {
     private Subscriber subscriber;
 
     private Context context;
-
     private AmbientDisplay display;
-
-
     private DisplayTopology topology;
+
+
+    public static final String CHANNEL_NAME = "ambientdisplay";
 
     public static class Action {
         public static final String NAME = "ACTION";
@@ -46,6 +49,9 @@ public class Communicator {
         public static final String DENSITY_NAME = "DENSITY";
     }
 
+
+
+
     public class DisplayReceiver extends Receiver {
         public void receive(Message msg) {
             String content = "";
@@ -53,8 +59,6 @@ public class Communicator {
                 content += content + key + ": " + msg.getMeta(key) + "\n";
                 Log.e("ambientdisplay", key + ": " + msg.getMeta(key));
             }
-            //((MainActivity)context).display(content);
-            publishScreen();
 
             String action = msg.getMeta().get(Action.NAME);
             if (action.compareTo(Action.SCREEN_ADD) == 0) {
@@ -66,6 +70,22 @@ public class Communicator {
             }
         }
     }
+
+
+    public class DisplayGreeter implements ITypedGreeter {
+
+        @Override
+        public void welcome(TypedPublisher typedPublisher, SubscriberStub subscriberStub) {
+            publishScreen(typedPublisher);
+        }
+
+        @Override
+        public void farewell(TypedPublisher typedPublisher, SubscriberStub subscriberStub) {
+            removeScreen(typedPublisher.getUUID());
+        }
+    }
+
+
 
     public Communicator(Context ctx) {
 
@@ -88,10 +108,10 @@ public class Communicator {
         node = new Node();
         disc.add(node);
 
-        publisher = new Publisher("ambientdisplay");
+        publisher = new Publisher(CHANNEL_NAME);
         node.addPublisher(publisher);
 
-        subscriber = new Subscriber("ambientdisplay", new DisplayReceiver());
+        subscriber = new Subscriber(CHANNEL_NAME, new DisplayReceiver());
         node.addSubscriber(subscriber);
 
 
@@ -99,18 +119,21 @@ public class Communicator {
     }
 
 
-    public void publishScreen() {
+    public void publishScreen(Publisher pub) {
         Message msg = new Message();
-        msg.putMeta("ACTION", "ALOHA");
-        msg.putMeta("ID", node.getIP());
-        msg.putMeta("WIDTH", "1080");
-        msg.putMeta("HEIGHT", "1920");
-        publisher.send(msg);
+        msg.putMeta(Action.NAME, Action.SCREEN_ADD);
+        msg.putMeta(Screen.ID_NAME, node.getUUID());
+
+        msg.putMeta(Screen.WIDTH_NAME, ""+context.getResources().getDisplayMetrics().widthPixels);
+        msg.putMeta(Screen.HEIGHT_NAME, ""+context.getResources().getDisplayMetrics().heightPixels);
+
+        msg.putMeta(Screen.DENSITY_NAME, ""+context.getResources().getDisplayMetrics().densityDpi);
+        pub.send(msg);
     }
 
     public void sendImage(byte[] data) {
         Message msg = new Message();
-        msg.putMeta("ACTION", "DISPLAY");
+        msg.putMeta(Action.NAME, Action.DISPLAY);
         msg.setData(data);
         publisher.send(msg);
     }
@@ -128,6 +151,11 @@ public class Communicator {
 
     private void removeScreen(Message msg) {
         Display d = topology.displays.get(msg.getMeta(Communicator.Screen.ID_NAME));
+        topology.displays.remove(d);
+    }
+
+    private void removeScreen(String uuid) {
+        Display d = topology.displays.get(uuid);
         topology.displays.remove(d);
     }
 }
