@@ -96,7 +96,8 @@ public class Communicator {
 
 
     /**
-     * Contructor
+     * Contructor for the Communicator class.
+     * It is important that a reference to this instance is hold throughout the life of the app.
      *
      * @param ctx the context, usually the Activity
      * @param ctrl the DisplayController which calculates screen alignment
