@@ -1,6 +1,7 @@
 package tud.tk3.ambientdisplay.app.communication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.TextView;
@@ -36,6 +37,8 @@ public class Communicator {
 
     private DisplayTopology topology;
 
+    private String ID;
+
 
     public static final String CHANNEL_NAME = "ambientdisplay";
 
@@ -66,8 +69,9 @@ public class Communicator {
 
             String action = msg.getMeta().get(Action.NAME);
             if (action.compareTo(Action.SCREEN_ADD) == 0) {
-                addScreen(msg);
-                controller.calculateAlignment(topology);
+                if (addScreen(msg)) {
+                    //controller.calculateAlignment(topology);
+                }
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
             } else if (action.compareTo(Action.DISPLAY) == 0) {
@@ -79,12 +83,14 @@ public class Communicator {
 
     public class DisplayGreeter extends Greeter {
 
-        public void welcome(TypedPublisher typedPublisher, SubscriberStub subscriberStub) {
+        @Override
+        public void welcome(Publisher typedPublisher, SubscriberStub subscriberStub) {
             publishScreen(typedPublisher);
         }
 
-        public void farewell(TypedPublisher typedPublisher, SubscriberStub subscriberStub) {
-            removeScreen(typedPublisher.getUUID());
+        @Override
+        public void farewell(Publisher typedPublisher, SubscriberStub subscriberStub) {
+            removeScreen(subscriberStub.getUUID());
         }
     }
 
@@ -98,7 +104,7 @@ public class Communicator {
     public Communicator(Context ctx, DisplayController ctrl) {
 
         context = ctx;
-        display = (AmbientDisplay) ctx;
+        //display = (AmbientDisplay) ctx;
         controller = ctrl;
 
         WifiManager wifi = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
@@ -107,7 +113,7 @@ public class Communicator {
             mcLock.acquire();
             // mcLock.release();
         } else {
-            Log.v("COMMUNICATOR", "Cannot get WifiManager");
+            Log.e("COMMUNICATOR", "Cannot get WifiManager");
         }
 
         System.loadLibrary("umundoNativeJava");
@@ -125,6 +131,15 @@ public class Communicator {
         node.addSubscriber(subscriber);
 
         topology = new DisplayTopology();
+
+
+        /*SharedPreferences prefs = context.getSharedPreferences("tud.tk3.ambientdisplay", Context.MODE_PRIVATE);
+        ID = prefs.getString(Screen.ID_NAME, node.getUUID());
+        if (!prefs.contains(Screen.ID_NAME)) {
+            prefs.edit().putString(Screen.ID_NAME, ID);
+        }*/
+
+        ID = node.getUUID();
     }
 
 
@@ -138,14 +153,14 @@ public class Communicator {
     private void publishScreen(Publisher pub) {
         Message msg = new Message();
         msg.putMeta(Action.NAME, Action.SCREEN_ADD);
-        msg.putMeta(Screen.ID_NAME, node.getUUID());
+        msg.putMeta(Screen.ID_NAME, ID);
 
         msg.putMeta(Screen.WIDTH_NAME, ""+context.getResources().getDisplayMetrics().widthPixels);
         msg.putMeta(Screen.HEIGHT_NAME, ""+context.getResources().getDisplayMetrics().heightPixels);
 
         msg.putMeta(Screen.DENSITY_NAME, ""+context.getResources().getDisplayMetrics().densityDpi);
         pub.send(msg);
-        Log.d("COMMUNICATOR", "published screen: "+node.getUUID());
+        Log.e("COMMUNICATOR", "published screen: "+ID);
     }
 
     /**
@@ -161,15 +176,23 @@ public class Communicator {
     }
 
 
-
-    private void addScreen(Message msg) {
+    /**
+     *
+     * @param msg
+     * @return true if the screen is indeed new, otherwise false
+     */
+    private boolean addScreen(Message msg) {
         String id = msg.getMeta(Communicator.Screen.ID_NAME);
         int width = Integer.parseInt(msg.getMeta(Communicator.Screen.WIDTH_NAME));
         int height = Integer.parseInt(msg.getMeta(Communicator.Screen.HEIGHT_NAME));
         int density = Integer.parseInt(msg.getMeta(Communicator.Screen.DENSITY_NAME));
         Display d = new Display(id, width, height, density);
-        Log.d("COMMUNICATOR", "added new screen: "+id+", "+height+"*"+width+" pixels");
+        if (topology.displays.containsKey(id)) {
+            return false;
+        }
+        Log.e("COMMUNICATOR", "added new screen: "+id+", "+height+"*"+width+" pixels");
         topology.displays.put(id, d);
+        return true;
     }
 
 
@@ -182,5 +205,6 @@ public class Communicator {
     private void removeScreen(String uuid) {
         Display d = topology.displays.get(uuid);
         topology.displays.remove(d);
+        Log.e("COMMUNICATOR", "removed screen: "+uuid);
     }
 }
