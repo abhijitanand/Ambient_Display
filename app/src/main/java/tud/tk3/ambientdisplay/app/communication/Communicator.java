@@ -145,6 +145,7 @@ public class Communicator {
 
         msg.putMeta(Screen.DENSITY_NAME, ""+context.getResources().getDisplayMetrics().densityDpi);
         pub.send(msg);
+        Log.d("COMMUNICATOR", "published screen: "+node.getUUID());
     }
 
     /**
@@ -167,6 +168,7 @@ public class Communicator {
         int height = Integer.parseInt(msg.getMeta(Communicator.Screen.HEIGHT_NAME));
         int density = Integer.parseInt(msg.getMeta(Communicator.Screen.DENSITY_NAME));
         Display d = new Display(id, width, height, density);
+        Log.d("COMMUNICATOR", "added new screen: "+id+", "+height+"*"+width+" pixels");
         topology.displays.put(id, d);
     }
 
