@@ -10,4 +10,12 @@ public class Display {
     public int width;
     public int height;
     public int dpi;
+
+
+    public Display(String id, int width, int height, int dpi) {
+        this.uid = id;
+        this.width = width;
+        this.height = height;
+        this.dpi = dpi;
+    }
 }
