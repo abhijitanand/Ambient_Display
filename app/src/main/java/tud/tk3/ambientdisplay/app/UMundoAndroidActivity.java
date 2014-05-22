@@ -16,6 +16,8 @@ import org.umundo.core.Publisher;
 import org.umundo.core.Receiver;
 import org.umundo.core.Subscriber;
 
+import tud.tk3.ambientdisplay.app.communication.Communicator;
+
 /**
  * Getting it to run:
  * 
@@ -44,6 +46,8 @@ public class UMundoAndroidActivity extends Activity {
 	Node node;
 	Publisher fooPub;
 	Subscriber fooSub;
+
+    Communicator comm;
 
 	public class TestPublishing implements Runnable {
 
@@ -116,5 +120,8 @@ public class UMundoAndroidActivity extends Activity {
     
 		testPublishing = new Thread(new TestPublishing());
 		testPublishing.start();
+
+        comm = new Communicator(this, null);
+        comm.publishScreen();
 	}
 }
