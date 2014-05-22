@@ -19,10 +19,19 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.util.List;
+
+import tud.tk3.ambientdisplay.app.communication.AmbientDisplay;
+import tud.tk3.ambientdisplay.app.communication.Communicator;
+import tud.tk3.ambientdisplay.app.communication.DisplayController;
+import tud.tk3.ambientdisplay.app.communication.DumbDisplayController;
+import tud.tk3.ambientdisplay.app.display.ImageSection;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     private ImageView imageView;
+    private Communicator comm;
+    private DisplayController dispController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +46,9 @@ public class MainActivity extends ActionBarActivity {
         Bitmap bitmapCropped = Bitmap.createBitmap(bitmap, 0, 0, 50, 50);
         System.out.println("Cropped: " + bitmapCropped.getHeight() + " " + bitmapCropped.getWidth());
         imageView.setImageBitmap(bitmapCropped);
+        dispController = new DumbDisplayController(this);
+        comm = new Communicator(this, dispController);
+        comm.publishScreen();
     }
 
 
@@ -73,7 +85,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch(requestCode) {
             case 1234:
                 if(resultCode == RESULT_OK){
@@ -89,14 +100,26 @@ public class MainActivity extends ActionBarActivity {
                     cursor.close();
 
                     Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                    imageView.setImageBitmap(yourSelectedImage);
-            /* Now you have choosen image in Bitmap format in object "yourSelectedImage". You can use it in way you want! */
-
-
-
+                    comm.sendImage(yourSelectedImage);
+                    displayImage(yourSelectedImage);
                 }
         }
 
     };
+
+    @Override
+    public void displayImage(Bitmap image) {
+        imageView.setImageBitmap(image);
+    }
+
+    @Override
+    public void topologyChange(List<ImageSection> sections) {
+
+    }
+
+    @Override
+    public void imageSectionChange(ImageSection section) {
+
+    }
 
 }
