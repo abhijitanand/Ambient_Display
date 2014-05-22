@@ -6,4 +6,9 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_gallery"
+        android:title="@string/action_gallery"
+        android:showAsAction="never" />
 </menu>

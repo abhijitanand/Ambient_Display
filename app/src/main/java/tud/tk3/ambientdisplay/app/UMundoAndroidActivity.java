@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TextView;
 
 import org.umundo.core.Discovery;
@@ -15,6 +16,10 @@ import org.umundo.core.Node;
 import org.umundo.core.Publisher;
 import org.umundo.core.Receiver;
 import org.umundo.core.Subscriber;
+import android.widget.ImageButton;
+import android.widget.Toast;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import tud.tk3.ambientdisplay.app.communication.Communicator;
 
@@ -46,6 +51,7 @@ public class UMundoAndroidActivity extends Activity {
 	Node node;
 	Publisher fooPub;
 	Subscriber fooSub;
+    ImageButton imageButton;
 
     Communicator comm;
 
@@ -90,6 +96,8 @@ public class UMundoAndroidActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        addListenerOnButton();
 
 		tv = new TextView(this);
 		tv.setText("");
@@ -124,4 +132,22 @@ public class UMundoAndroidActivity extends Activity {
         comm = new Communicator(this, null);
         comm.publishScreen();
 	}
+    public void addListenerOnButton() {
+
+        imageButton = (ImageButton) findViewById(R.id.imageButton1);
+
+        imageButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                Toast.makeText(UMundoAndroidActivity.this,
+                        "ImageButton is clicked!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
 }
