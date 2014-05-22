@@ -42,6 +42,7 @@ public class Communicator {
     private DisplayTopology topology;
 
     private String ID;
+    private Bitmap bitmap;
 
 
     public static final String CHANNEL_NAME = "ambientdisplay";
@@ -79,7 +80,7 @@ public class Communicator {
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
             } else if (action.compareTo(Action.DISPLAY) == 0) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(msg.getData(), 0, msg.getData().length);
+                bitmap = BitmapFactory.decodeByteArray(msg.getData(), 0, msg.getData().length);
                 display.displayImage(bitmap);
             }
         }

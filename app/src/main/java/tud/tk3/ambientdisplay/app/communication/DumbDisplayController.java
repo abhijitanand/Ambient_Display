@@ -52,12 +52,13 @@ public class DumbDisplayController implements DisplayController {
         double offsetX = 0;
         double offsetY = 0;
         double totalX = 0;
+        double totalY = 0;
         // Calculate total width
         for(int i = sorted.size() - 1; i >= 0; i--){
             display = sorted.get(i);
             totalX += display.width / display.dpi;
+            totalY = Math.max(totalY,display.height / display.dpi);
         }
-        double totalY = totalX / 1.6;
         // Generate configuration
         for(int i = sorted.size() - 1; i >= 0; i--){
             display = sorted.get(i);
