@@ -18,6 +18,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -41,6 +44,8 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -122,6 +127,8 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     @Override
     public void displayImage(Bitmap bitmap) {
         //this.image= bitmap;
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
 
         int resx = bitmap.getWidth();
         int resy = bitmap.getHeight();
@@ -160,6 +167,24 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     @Override
     public void imageSectionChange(ImageSection section) {
         mySection = section;
+    }
+    public boolean onTouchEvent(MotionEvent event) {
+        int eventaction = event.getAction();
+
+        switch (eventaction) {
+              case MotionEvent.ACTION_UP:
+                  if(getActionBar().isShowing())
+                  {
+                      getActionBar().hide();
+                  }
+                  else {
+                      getActionBar().show();
+                  }
+                break;
+        }
+
+        // tell the system that we handled the event and no further processing is required
+        return true;
     }
 
 }
