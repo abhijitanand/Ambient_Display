@@ -74,7 +74,7 @@ public class Communicator {
             String action = msg.getMeta().get(Action.NAME);
             if (action.compareTo(Action.SCREEN_ADD) == 0) {
                 if (addScreen(msg)) {
-                    //controller.calculateAlignment(topology);
+                    controller.calculateAlignment(topology);
                 }
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
@@ -110,7 +110,7 @@ public class Communicator {
     public Communicator(Context ctx, DisplayController ctrl) {
 
         context = ctx;
-        //display = (AmbientDisplay) ctx;
+        display = (AmbientDisplay) ctx;
         controller = ctrl;
 
         WifiManager wifi = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
