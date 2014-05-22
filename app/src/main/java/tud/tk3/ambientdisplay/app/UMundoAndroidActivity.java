@@ -97,7 +97,7 @@ public class UMundoAndroidActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        addListenerOnButton();
+       //addListenerOnButton();
 
 		tv = new TextView(this);
 		tv.setText("");
@@ -132,7 +132,7 @@ public class UMundoAndroidActivity extends Activity {
         comm = new Communicator(this, null);
         comm.publishScreen();
 	}
-    public void addListenerOnButton() {
+   /* public void addListenerOnButton() {
 
         imageButton = (ImageButton) findViewById(R.id.imageButton1);
 
@@ -149,5 +149,5 @@ public class UMundoAndroidActivity extends Activity {
         });
 
     }
-
+*/
 }
