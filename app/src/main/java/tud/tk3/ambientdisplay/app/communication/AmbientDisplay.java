@@ -1,6 +1,7 @@
 package tud.tk3.ambientdisplay.app.communication;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import tud.tk3.ambientdisplay.app.display.ImageSection;
  */
 public interface AmbientDisplay {
 
-    public void displayImage(byte[] data);
+    public void displayImage(Bitmap image);
 
     public void topologyChange(List<ImageSection> sections);
 
