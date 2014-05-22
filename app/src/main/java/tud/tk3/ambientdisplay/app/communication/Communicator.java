@@ -2,6 +2,8 @@ package tud.tk3.ambientdisplay.app.communication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.TextView;
@@ -16,6 +18,8 @@ import org.umundo.core.Subscriber;
 import org.umundo.core.SubscriberStub;
 import org.umundo.s11n.ITypedGreeter;
 import org.umundo.s11n.TypedPublisher;
+
+import java.io.ByteArrayOutputStream;
 
 import tud.tk3.ambientdisplay.app.display.Display;
 import tud.tk3.ambientdisplay.app.display.DisplayTopology;
@@ -75,7 +79,8 @@ public class Communicator {
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
             } else if (action.compareTo(Action.DISPLAY) == 0) {
-                display.displayImage(msg.getData());
+                Bitmap bitmap = BitmapFactory.decodeByteArray(msg.getData(), 0, msg.getData().length);
+                display.displayImage(bitmap);
             }
         }
     }
@@ -131,16 +136,14 @@ public class Communicator {
         subscriber = new Subscriber(CHANNEL_NAME, new DisplayReceiver());
         node.addSubscriber(subscriber);
 
-        topology = new DisplayTopology();
-
-
-        /*SharedPreferences prefs = context.getSharedPreferences("tud.tk3.ambientdisplay", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("tud.tk3.ambientdisplay", Context.MODE_PRIVATE);
         ID = prefs.getString(Screen.ID_NAME, node.getUUID());
         if (!prefs.contains(Screen.ID_NAME)) {
-            prefs.edit().putString(Screen.ID_NAME, ID);
-        }*/
+            prefs.edit().putString(Screen.ID_NAME, ID).commit();
+        }
 
-        ID = node.getUUID();
+        topology = new DisplayTopology();
+        topology.myID = ID;
     }
 
 
@@ -167,12 +170,16 @@ public class Communicator {
     /**
      * Sends Image data to display to all other connected Displays
      *
-     * @param data
+     * @param image
      */
-    public void sendImage(byte[] data) {
+    public void sendImage(Bitmap image) {
+        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, blob);
+        byte[] bitmapdata = blob.toByteArray();
+
         Message msg = new Message();
         msg.putMeta(Action.NAME, Action.DISPLAY);
-        msg.setData(data);
+        msg.setData(bitmapdata);
         publisher.send(msg);
     }
 
