@@ -13,6 +13,8 @@ import tud.tk3.ambientdisplay.app.communication.Communicator;
 public class DisplayTopology {
     public Map<String, Display> displays;
 
+    public String myID;
+
     public DisplayTopology() {
         displays = new HashMap<String, Display>();
     }

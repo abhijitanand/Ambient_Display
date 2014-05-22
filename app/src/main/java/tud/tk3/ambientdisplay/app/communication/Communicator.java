@@ -131,16 +131,14 @@ public class Communicator {
         subscriber = new Subscriber(CHANNEL_NAME, new DisplayReceiver());
         node.addSubscriber(subscriber);
 
-        topology = new DisplayTopology();
-
-
-        /*SharedPreferences prefs = context.getSharedPreferences("tud.tk3.ambientdisplay", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("tud.tk3.ambientdisplay", Context.MODE_PRIVATE);
         ID = prefs.getString(Screen.ID_NAME, node.getUUID());
         if (!prefs.contains(Screen.ID_NAME)) {
-            prefs.edit().putString(Screen.ID_NAME, ID);
-        }*/
+            prefs.edit().putString(Screen.ID_NAME, ID).commit();
+        }
 
-        ID = node.getUUID();
+        topology = new DisplayTopology();
+        topology.myID = ID;
     }
 
 
