@@ -5,12 +5,12 @@ package tud.tk3.ambientdisplay.app.display;
  */
 public class ImageSection {
 
-    public int posX;
-    public int posY;
-    public int offsetX;
-    public int offsetY;
+    public double posX;
+    public double posY;
+    public double offsetX;
+    public double offsetY;
 
-    public ImageSection(int posX, int posY, int offsetX, int offsetY){
+    public ImageSection(double posX, double posY, double offsetX, double offsetY){
         this.posX = posX;
         this.posY = posY;
         this.offsetX = offsetX;
@@ -19,7 +19,7 @@ public class ImageSection {
 
     @Override
     public String toString(){
-        return String.format("(%d/%d) + (%d/%d)", posX, posY, offsetX, offsetY);
+        return String.format("(%f/%f) + (%f/%f)", posX, posY, offsetX, offsetY);
     }
 
 }

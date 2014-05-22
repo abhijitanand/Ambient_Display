@@ -33,16 +33,24 @@ public class DumbDisplayController implements DisplayController {
         ArrayList<ImageSection> arrangedDisplays = new ArrayList<ImageSection>();
 
         Display display;
-        int posX = 0;
-        int posY = 0;
-        int offsetX = 0;
-        int offsetY = 0;
+        double posX = 0;
+        double posY = 0;
+        double offsetX = 0;
+        double offsetY = 0;
+        double totalX = 0;
+        // Calculate total width
         for(int i = sorted.size() - 1; i >= 0; i--){
             display = sorted.get(i);
-            offsetX = posX + display.width;
-            offsetY = display.height;
+            totalX += display.width / display.dpi;
+        }
+        double totalY = totalX / 1.6;
+        // Generate configuration
+        for(int i = sorted.size() - 1; i >= 0; i--){
+            display = sorted.get(i);
+            offsetX = (display.width / (display.dpi * totalX));
+            offsetY = display.height / (display.dpi * totalY);
             arrangedDisplays.add(new ImageSection(posX, posY, offsetX, offsetY));
-            posX += display.width;
+            posX += display.width / (display.dpi * totalX);
         }
 
         return arrangedDisplays;
@@ -51,8 +59,8 @@ public class DumbDisplayController implements DisplayController {
     public static void main(String[] args) {
         DisplayTopology dt = new DisplayTopology();
         dt.displays.put("1", new Display("1", 800, 600, 90));
-        dt.displays.put("0", new Display("0", 1024, 768, 90));
-        dt.displays.put("2", new Display("2", 640, 480, 90));
+        dt.displays.put("0", new Display("0", 1600, 1200, 90));
+        dt.displays.put("2", new Display("2", 800, 400, 90));
 
         DisplayController dc = new DumbDisplayController();
         dc.calculateAlignment(dt);
