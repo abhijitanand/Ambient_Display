@@ -2,6 +2,8 @@ package tud.tk3.ambientdisplay.app.communication;
 
 
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,7 +86,7 @@ public class DumbDisplayController implements DisplayController {
 
         DisplayController dc = new DumbDisplayController(new AmbientDisplay() {
             @Override
-            public void displayImage(byte[] data) {
+            public void displayImage(Bitmap image) {
 
             }
 
