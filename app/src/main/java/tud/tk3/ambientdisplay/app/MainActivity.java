@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     private Communicator comm;
     private DisplayController dispController;
     private Bitmap image;
+    ImageSection mySection;
    // private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,12 +121,35 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
 
     @Override
     public void displayImage(Bitmap bitmap) {
-        this.image= bitmap;
-        runOnUiThread(new Thread(){
-             public void run(){
+        //this.image= bitmap;
+
+        int resx = bitmap.getWidth();
+        int resy = bitmap.getHeight();
+        int posX = (int) (resx*mySection.posX);
+        int posY = (int) (resy*mySection.posY);
+        int offsetX= (int) (resx*mySection.offsetX);
+        int offsetY= (int) (resy*mySection.offsetY);
+        Log.e("Logging..",""+resx+":"+resy+" "+mySection.posX+":"+mySection.offsetX);
+        if(posX+offsetX >resx)
+        {
+            offsetX = resx - posX;
+        }
+        if(posY+offsetY >resy)
+        {
+            offsetY = resy - posY;
+        }
+
+        this.image = Bitmap.createBitmap(bitmap,posX ,posY ,offsetX ,offsetY );
+
+        runOnUiThread(new Thread() {
+            public void run() {
+
                 imageView.setImageBitmap(image);
-             };
+            }
+
+            ;
         });
+
     }
 
     @Override
@@ -134,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
 
     @Override
     public void imageSectionChange(ImageSection section) {
-
+        mySection = section;
     }
 
 }
