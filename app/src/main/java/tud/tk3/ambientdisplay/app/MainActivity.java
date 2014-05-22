@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.LogRecord;
 
 import tud.tk3.ambientdisplay.app.communication.AmbientDisplay;
 import tud.tk3.ambientdisplay.app.communication.Communicator;
@@ -32,6 +34,8 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     private ImageView imageView;
     private Communicator comm;
     private DisplayController dispController;
+    private Bitmap image;
+   // private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +53,12 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
         dispController = new DumbDisplayController(this);
         comm = new Communicator(this, dispController);
         comm.publishScreen();
+       /* handler = new Handler(){
+            public void displayOnMainThread(Bitmap image)
+            {
+                imageView.setImageBitmap(image);
+            }
+        };*/
     }
 
 
@@ -108,8 +118,13 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     };
 
     @Override
-    public void displayImage(Bitmap image) {
-        imageView.setImageBitmap(image);
+    public void displayImage(Bitmap bitmap) {
+        this.image= bitmap;
+        runOnUiThread(new Thread(){
+             public void run(){
+                imageView.setImageBitmap(image);
+             };
+        });
     }
 
     @Override
