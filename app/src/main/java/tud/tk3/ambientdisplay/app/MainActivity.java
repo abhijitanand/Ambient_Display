@@ -1,10 +1,16 @@
 package tud.tk3.ambientdisplay.app;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -13,6 +19,16 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageView iv = (ImageView) findViewById(R.id.imageView);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
+        drawable.setBounds(5, 5, 10, 10);
+//        iv.setImageDrawable(drawable);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+//        iv.setImageBitmap(bitmap);
+        Bitmap bitmapCropped = Bitmap.createBitmap(bitmap, 0, 0, 50, 50);
+        System.out.println("Cropped: " + bitmapCropped.getHeight() + " " + bitmapCropped.getWidth());
+        iv.setImageBitmap(bitmapCropped);
     }
 
 

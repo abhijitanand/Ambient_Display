@@ -21,6 +21,8 @@ import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import tud.tk3.ambientdisplay.app.communication.Communicator;
+
 /**
  * Getting it to run:
  * 
@@ -50,6 +52,8 @@ public class UMundoAndroidActivity extends Activity {
 	Publisher fooPub;
 	Subscriber fooSub;
     ImageButton imageButton;
+
+    Communicator comm;
 
 	public class TestPublishing implements Runnable {
 
@@ -124,6 +128,9 @@ public class UMundoAndroidActivity extends Activity {
     
 		testPublishing = new Thread(new TestPublishing());
 		testPublishing.start();
+
+        comm = new Communicator(this, null);
+        comm.publishScreen();
 	}
     public void addListenerOnButton() {
 
