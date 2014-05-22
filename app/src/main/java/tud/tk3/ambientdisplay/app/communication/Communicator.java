@@ -161,9 +161,11 @@ public class Communicator {
 
         msg.putMeta(Screen.WIDTH_NAME, ""+context.getResources().getDisplayMetrics().widthPixels);
         msg.putMeta(Screen.HEIGHT_NAME, ""+context.getResources().getDisplayMetrics().heightPixels);
-
         msg.putMeta(Screen.DENSITY_NAME, ""+context.getResources().getDisplayMetrics().densityDpi);
+
         pub.send(msg);
+        addScreen(msg);
+
         Log.e("COMMUNICATOR", "published screen: "+ID);
     }
 
