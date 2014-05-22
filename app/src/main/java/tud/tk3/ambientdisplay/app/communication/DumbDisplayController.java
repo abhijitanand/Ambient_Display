@@ -57,7 +57,7 @@ public class DumbDisplayController implements DisplayController {
         for(int i = sorted.size() - 1; i >= 0; i--){
             display = sorted.get(i);
             totalX += display.width / display.dpi;
-            totalY += display.height / display.dpi;
+            totalY = Math.max(totalY,display.height / display.dpi);
         }
         // Generate configuration
         for(int i = sorted.size() - 1; i >= 0; i--){
