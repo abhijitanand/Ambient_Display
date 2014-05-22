@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -49,32 +50,11 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
         setContentView(R.layout.activity_main);
 
         imageView = (ImageView) findViewById(R.id.imageView);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
-        drawable.setBounds(5, 5, 10, 10);
-//        iv.setImageDrawable(drawable);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-//        iv.setImageBitmap(bitmap);
-        Bitmap bitmapCropped = Bitmap.createBitmap(bitmap, 0, 0, 50, 50);
-        System.out.println("Cropped: " + bitmapCropped.getHeight() + " " + bitmapCropped.getWidth());
-        imageView.setImageBitmap(bitmapCropped);
+
         dispController = new DumbDisplayController(this);
         comm = new Communicator(this, dispController);
         comm.publishScreen();
-       /* handler = new Handler(){
-            public void displayOnMainThread(Bitmap image)
-            {
-                imageView.setImageBitmap(image);
-            }
-        };*/
     }
-
-
-   /*     @Override
-              public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     public void displayImage(Bitmap bitmap) {
         //this.image= bitmap;
         //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getActionBar().hide();
+
 
         int resx = bitmap.getWidth();
         int resy = bitmap.getHeight();
@@ -150,7 +130,7 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
 
         runOnUiThread(new Thread() {
             public void run() {
-
+                getActionBar().hide();
                 imageView.setImageBitmap(image);
             }
 
