@@ -118,7 +118,7 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
         int posX = (int) (resx*mySection.posX);
         int posY = (int) (resy*mySection.posY);
         int offsetX= (int) (resx*mySection.offsetX);
-        int offsetY= (int) ((resy*mySection.offsetY) * (((float)resx)/resy));
+        int offsetY= (int) ((resy*mySection.offsetY) * (((double)resx)/((double)resy)));
         //Log.e("Logging..",""+resx+":"+resy+" "+mySection.posX+":"+mySection.offsetX);
         //Log.e("Logging..",(resx/resy)+"|"+offsetX+":"+offsetY+" "+mySection.posY+":"+mySection.offsetY);
         if(posX+offsetX > resx)
