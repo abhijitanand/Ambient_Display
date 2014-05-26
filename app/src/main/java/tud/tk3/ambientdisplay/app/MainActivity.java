@@ -41,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     private DisplayController dispController;
     private Bitmap image;
     ImageSection mySection;
+    List<ImageSection> allSections;
    // private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,10 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
         setContentView(R.layout.activity_main);
 
         imageView = (ImageView) findViewById(R.id.imageView);
+
+        Bitmap bitmap = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
+        testCanvas(bitmap);
+        imageView.setImageBitmap(bitmap);
 
         // Initialize the displayed section of an image as the whole image
         mySection = new ImageSection(0, 0, 1, 1);
@@ -144,6 +149,38 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
 
     @Override
     public void topologyChange(List<ImageSection> sections) {
+        allSections = sections;
+        final Bitmap bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawSections(canvas, sections);
+
+        runOnUiThread(new Thread() {
+            public void run() {
+                getActionBar().hide();
+                imageView.setImageBitmap(bitmap);
+            }
+
+            ;
+        });
+    }
+
+    private void drawSections(Canvas canvas, List<ImageSection> sections){
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        Paint bluePaint = new Paint();
+        bluePaint.setARGB(255, 0, 0, 200);
+        canvas.drawPaint(bluePaint);
+        Paint grayPaint = new Paint();
+        grayPaint.setARGB(255, 128, 128, 128);
+        for(ImageSection section : sections){
+            float left = (float) (width * section.posX) + 2;
+            float top = (float) (height * section.posY) + 2;
+            float right = left + (float) (width * section.offsetX) -4;
+            float bottom = top + (float) (height * section.offsetY) -4;
+            canvas.clipRect(left, top, right, bottom);
+            canvas.drawPaint(grayPaint);
+        }
+
 
     }
 
@@ -168,6 +205,14 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
 
         // tell the system that we handled the event and no further processing is required
         return true;
+    }
+
+    private void testCanvas(Bitmap bitmap){
+        Canvas canvas = new Canvas(bitmap);
+        Paint grayPaint = new Paint();
+        grayPaint.setARGB(255, 128, 128, 128);
+        canvas.clipRect(10, 10, 100, 100);
+        canvas.drawPaint(grayPaint);
     }
 
 }

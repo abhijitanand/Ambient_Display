@@ -166,6 +166,7 @@ public class Communicator {
 
         pub.send(msg);
         addScreen(msg);
+        controller.calculateAlignment(topology);
 
         Log.e("COMMUNICATOR", "published screen: "+ID);
     }
