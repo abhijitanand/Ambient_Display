@@ -78,6 +78,7 @@ public class Communicator {
                 controller.calculateAlignment(topology);
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
+                controller.calculateAlignment(topology);
             } else if (action.compareTo(Action.DISPLAY) == 0) {
                 bitmap = BitmapFactory.decodeByteArray(msg.getData(), 0, msg.getData().length);
                 display.displayImage(bitmap);
@@ -96,6 +97,7 @@ public class Communicator {
         @Override
         public void farewell(Publisher typedPublisher, SubscriberStub subscriberStub) {
             removeScreen(subscriberStub.getUUID());
+            controller.calculateAlignment(topology);
         }
     }
 
