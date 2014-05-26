@@ -51,6 +51,9 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
+        // Initialize the displayed section of an image as the whole image
+        mySection = new ImageSection(0, 0, 1, 1);
+
         dispController = new DumbDisplayController(this);
         comm = new Communicator(this, dispController);
         comm.publishScreen();
