@@ -74,6 +74,7 @@ public class Communicator {
 
             String action = msg.getMeta().get(Action.NAME);
             if (action.compareTo(Action.SCREEN_ADD) == 0) {
+                addScreen(msg);
                 controller.calculateAlignment(topology);
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
@@ -191,18 +192,15 @@ public class Communicator {
      * @param msg
      * @return true if the screen is indeed new, otherwise false
      */
-    private boolean addScreen(Message msg) {
+    private void addScreen(Message msg) {
         String id = msg.getMeta(Communicator.Screen.ID_NAME);
         int width = Integer.parseInt(msg.getMeta(Communicator.Screen.WIDTH_NAME));
         int height = Integer.parseInt(msg.getMeta(Communicator.Screen.HEIGHT_NAME));
         int density = Integer.parseInt(msg.getMeta(Communicator.Screen.DENSITY_NAME));
         Display d = new Display(id, width, height, density);
-        if (topology.displays.containsKey(id)) {
-            return false;
-        }
+
         Log.e("COMMUNICATOR", "added new screen: "+id+", "+height+"*"+width+" pixels");
         topology.displays.put(id, d);
-        return true;
     }
 
 
