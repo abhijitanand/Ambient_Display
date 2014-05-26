@@ -2,18 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="top"
     tools:context="tud.tk3.ambientdisplay.app.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:gravity="top"
         android:background="@android:color/black">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_gravity="top"
             android:background="@android:color/black"
             android:contentDescription="Test Description" />
     </LinearLayout>

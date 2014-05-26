@@ -57,13 +57,16 @@ public class DumbDisplayController implements DisplayController {
         for(int i = sorted.size() - 1; i >= 0; i--){
             display = sorted.get(i);
             totalX += display.width / display.dpi;
-            totalY = Math.max(totalY,display.height / display.dpi);
+            //totalY = Math.max(totalY,display.height / display.dpi);
         }
+        totalY = totalX;
         // Generate configuration
         for(int i = sorted.size() - 1; i >= 0; i--){
             display = sorted.get(i);
             offsetX = (display.width / (display.dpi * totalX));
             offsetY = display.height / (display.dpi * totalY);
+            //offsetY = offsetX * (display.height/display.width); //maximize screen estate, dirty hack ;)
+            //offsetY = display.height / (display.dpi * totalX);
             ImageSection section = new ImageSection(posX, posY, offsetX, offsetY);
             arrangedDisplays.add(section);
             if(display.uid.equals(myID)){
