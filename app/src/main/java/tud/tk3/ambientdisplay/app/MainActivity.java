@@ -168,9 +168,9 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     private void drawSections(Canvas canvas, List<ImageSection> sections){
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        Paint bluePaint = new Paint();
-        bluePaint.setARGB(255, 0, 0, 200);
-        canvas.drawPaint(bluePaint);
+//        Paint bluePaint = new Paint();
+//        bluePaint.setARGB(255, 0, 0, 200);
+//        canvas.drawPaint(bluePaint);
         Paint grayPaint = new Paint();
         grayPaint.setARGB(255, 128, 128, 128);
         for(ImageSection section : sections){
@@ -178,8 +178,24 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
             float top = (float) (height * section.posY) + 2;
             float right = left + (float) (width * section.offsetX) -4;
             float bottom = top + (float) (height * section.offsetY) -4;
+            canvas.save();
             canvas.clipRect(left, top, right, bottom);
             canvas.drawPaint(grayPaint);
+            canvas.restore();
+        }
+
+        if(mySection != null){
+            Paint orangePaint = new Paint();
+            orangePaint.setARGB(255, 255, 140, 0);
+            float left = (float) (width * mySection.posX) + 2;
+            float top = (float) (height * mySection.posY) + 2;
+            float right = left + (float) (width * mySection.offsetX) -4;
+            float bottom = top + (float) (height * mySection.offsetY) -4;
+            canvas.save();
+            canvas.clipRect(left, top, right, bottom);
+            canvas.drawPaint(orangePaint);
+            canvas.restore();
+
         }
 
 
