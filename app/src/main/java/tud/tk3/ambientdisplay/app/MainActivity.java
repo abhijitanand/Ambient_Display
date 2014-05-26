@@ -117,24 +117,25 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
         //this.image= bitmap;
         //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
-
         int resx = bitmap.getWidth();
         int resy = bitmap.getHeight();
+
         int posX = (int) (resx*mySection.posX);
         int posY = (int) (resy*mySection.posY);
         int offsetX= (int) (resx*mySection.offsetX);
-        int offsetY= (int) (resy*mySection.offsetY);
-        Log.e("Logging..",""+resx+":"+resy+" "+mySection.posX+":"+mySection.offsetX);
-        if(posX+offsetX >resx)
+        int offsetY= (int) ((resy*mySection.offsetY) * (((double)resx)/((double)resy)));
+        //Log.e("Logging..",""+resx+":"+resy+" "+mySection.posX+":"+mySection.offsetX);
+        //Log.e("Logging..",(resx/resy)+"|"+offsetX+":"+offsetY+" "+mySection.posY+":"+mySection.offsetY);
+        if(posX+offsetX > resx)
         {
             offsetX = resx - posX;
         }
-        if(posY+offsetY >resy)
+        if(posY+offsetY > resy)
         {
             offsetY = resy - posY;
         }
 
-        this.image = Bitmap.createBitmap(bitmap,posX ,posY ,offsetX ,offsetY );
+        this.image = Bitmap.createBitmap(bitmap, posX ,posY ,offsetX ,offsetY );
 
         runOnUiThread(new Thread() {
             public void run() {

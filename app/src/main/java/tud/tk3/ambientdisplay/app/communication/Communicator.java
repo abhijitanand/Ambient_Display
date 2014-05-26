@@ -74,9 +74,7 @@ public class Communicator {
 
             String action = msg.getMeta().get(Action.NAME);
             if (action.compareTo(Action.SCREEN_ADD) == 0) {
-                if (addScreen(msg)) {
-                    controller.calculateAlignment(topology);
-                }
+                controller.calculateAlignment(topology);
             } else if (action.compareTo(Action.SCREEN_REMOVE) == 0) {
                 removeScreen(msg);
             } else if (action.compareTo(Action.DISPLAY) == 0) {
