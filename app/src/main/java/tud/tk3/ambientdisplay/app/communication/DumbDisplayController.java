@@ -35,8 +35,8 @@ public class DumbDisplayController implements DisplayController {
         displays = dt.displays;
         String myID = dt.myID;
         ConfigureTuple ct = calculate(displays, myID);
-        ambientDisplay.topologyChange(ct.arrangedDisplays);
         ambientDisplay.imageSectionChange(ct.imageSection);
+        ambientDisplay.topologyChange(ct.arrangedDisplays);
     }
 
     private ConfigureTuple calculate(Map<String, Display> displays, String myID){
