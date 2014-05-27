@@ -69,7 +69,7 @@ public class Communicator {
             String content = "";
             for (String key : msg.getMeta().keySet()) {
                 content += content + key + ": " + msg.getMeta(key) + "\n";
-                Log.e("ambientdisplay", key + ": " + msg.getMeta(key));
+                //Log.e("ambientdisplay", key + ": " + msg.getMeta(key));
             }
 
             String action = msg.getMeta().get(Action.NAME);
@@ -97,6 +97,9 @@ public class Communicator {
         @Override
         public void farewell(Publisher typedPublisher, SubscriberStub subscriberStub) {
             removeScreen(subscriberStub.getUUID());
+
+            Log.e("PUBID", typedPublisher.getUUID());
+            Log.e("SUBID", subscriberStub.getUUID());
             controller.calculateAlignment(topology);
         }
     }
@@ -138,14 +141,14 @@ public class Communicator {
         subscriber = new Subscriber(CHANNEL_NAME, new DisplayReceiver());
         node.addSubscriber(subscriber);
 
-        SharedPreferences prefs = context.getSharedPreferences("tud.tk3.ambientdisplay", Context.MODE_PRIVATE);
-        ID = prefs.getString(Screen.ID_NAME, node.getUUID());
-        if (!prefs.contains(Screen.ID_NAME)) {
-            prefs.edit().putString(Screen.ID_NAME, ID).commit();
-        }
+        ID = subscriber.getUUID();
 
         topology = new DisplayTopology();
         topology.myID = ID;
+
+        Log.e("NODEID", node.getUUID());
+        Log.e("PUBID", publisher.getUUID());
+        Log.e("SUBID", subscriber.getUUID());
     }
 
     public void disconnect(){
@@ -221,8 +224,7 @@ public class Communicator {
 
 
     private void removeScreen(String uuid) {
-        Display d = topology.displays.get(uuid);
-        topology.displays.remove(d);
+        topology.displays.remove(uuid);
         Log.e("COMMUNICATOR", "removed screen: "+uuid);
     }
 }
