@@ -55,6 +55,12 @@ public class MainActivity extends ActionBarActivity implements AmbientDisplay{
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        comm.disconnect();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();

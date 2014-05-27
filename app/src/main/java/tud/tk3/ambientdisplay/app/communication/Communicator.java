@@ -148,6 +148,14 @@ public class Communicator {
         topology.myID = ID;
     }
 
+    public void disconnect(){
+        Log.i("COMMUNICATOR", "remove Subscriber and Publisher, then tear down node");
+        node.removeSubscriber(subscriber);
+        node.removePublisher(publisher);
+        node.delete();
+        node = null;
+    }
+
 
     /**
      * Publishes our device configuration to the other displays
